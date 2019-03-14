@@ -1,0 +1,79 @@
+schema:
+  type: tinyint
+  name: string
+  app_id: string
+  secret: string
+  token: string
+  aes_key: string
+  menu: json
+default:
+  title: 账号管理
+  modalClass: 'modal-lg'
+  beforeSave: wechat@main.update-menu
+  accountType:
+        1: 服务号
+        2: 订阅号
+        3: 小程序
+  actions:
+    -
+      type: create
+  columns:
+    - 
+      name: id
+      label: ID
+    - 
+      name: name
+      label: 名称
+    - 
+      name: type
+      label: 类型
+      type: tags
+      options: accountType
+      colors:
+        1: primary
+        2: success
+        3: danger
+    - 
+      name: id
+      label: 配置网址
+      component: wechat@server-url
+    -
+      label: 操作
+      type: action
+      actions:
+        - 
+          type: update
+        - 
+          type: delete
+  fields:
+    -
+      name: type
+      label: 类型
+      size: 6
+      type: select
+      options: accountType
+    -
+      name: name
+      label: 名称
+      size: 6
+    -
+      name: app_id
+      label: Appid
+      size: 6
+    -
+      name: secret
+      label: 密钥
+      size: 6
+    -
+      name: token
+      label: TOKEN
+      size: 6
+    -
+      name: aes_key
+      label: 加密KEY
+      size: 6
+    -
+      name: menu
+      label: 公众号菜单
+      component: wechat@menu-editor
+

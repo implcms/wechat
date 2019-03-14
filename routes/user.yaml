@@ -1,0 +1,7 @@
+url: admin/wechat/user
+layout: admin@default
+layoutData:
+    pageTitle: 微信用户管理
+page: admin@common.record-list
+data:
+  modelConfig: wechat@user

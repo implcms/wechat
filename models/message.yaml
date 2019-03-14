@@ -1,0 +1,65 @@
+schema:
+  account_id: integer
+  keyword: string
+  handler: string
+  content: text
+  _relations:
+    account:
+        modelConfig: wechat@account
+        type: belongsTo
+default:
+  title: 微信消息
+  ##表单对话框大小
+  modalClass: 'modal-lg'
+  ##配置返回列表绑定关系
+  actions:
+    -
+      type: create
+  columns:
+    - 
+      name: id
+      label: ID
+    - 
+      name: account_name
+      label: 账号
+    - 
+      name: keyword
+      label: 关键词
+    - 
+      name: handler
+      label: 处理方法
+    - 
+      name: content
+      label: 内容
+    - 
+      label: 二维码
+      component: wechat@keyword-qrcode
+    -
+      type: hidden
+      name: account_id
+    -
+      label: 操作
+      type: action
+      actions:
+      - 
+          type: update
+      - 
+          type: delete
+      -   
+  fields:
+    -
+      type: belongs-to
+      modelConfig: wechat@account
+      label: 账号
+      size: 6
+    - 
+      name: keyword
+      label: 关键词
+      size: 6
+    - 
+      name: handler
+      label: 处理方法
+    -
+      name: content
+      label: 回复内容
+      type: textarea

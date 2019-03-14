@@ -1,0 +1,7 @@
+url: admin/wechat/message
+layout: admin@default
+layoutData:
+    pageTitle: 消息管理
+page: admin@common.record-list
+data:
+  modelConfig: wechat@message

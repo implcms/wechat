@@ -1,0 +1,19 @@
+name: 微信+
+description: 提供微信开发解决方案，包括小程序，公众平台
+email: gheniablez@gmail.com
+depends:
+  admin: 
+    menus:
+      wechat:
+        lable: 微信+
+        icon: mdi mdi-wechat
+        url: '#'
+        sub_menus:
+          -
+            lable: 账号管理
+            icon: i-Empty-Box
+            url: 'admin/wechat/account'
+          -
+            lable: 消息管理
+            icon: i-Letter-Open
+            url: 'admin/wechat/message'
