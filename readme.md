@@ -21,6 +21,12 @@ https://www.domain.com/wechat?client_id=x
 ```
 `token` 和其他参数请查阅微信账号
 
+#### 在微信网页端公众号登录
+```
+https://www.domain.com/wechat/auth
+```
+>改地址可以传`url`参数，如果不传则跳转的上一个页面(REFERER)地址
+
 #### 更新公众号菜单
 
 ```
@@ -28,12 +34,6 @@ wechat@main.update-menu
 ```
 参数
 - `menus`
-
-#### 在微信网页端公众号登录
-```
-https://www.domain.com/wechat/auth
-```
-改地址可以传`url`参数，如果不传则跳转的上一个页面(REFERER)地址
 
 
 #### 公众号带参数二维码

@@ -208,7 +208,7 @@ class MainController{
      */
     public function apiQrcodeLogin(){
     	$key = rand();
-    	$result = $this->app->qrcode->forever("qrcodeLogin:".$key);
+    	$result = $this->app->qrcode->temporary("qrcodeLogin:".$key,1800);
         if(!isset($result['ticket'])){
             \Log::error($result);
             return mr(null,-1,"生成是出现错误，请稍后再试!");
