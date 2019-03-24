@@ -90,7 +90,9 @@ class MainController{
     public function apiAuthCallback($param){
         input('scope',$scope);
         $url = session('wechat_auth_origin_url');
+        
         $user = $this->app->oauth->user();
+        
         if($scope == "snsapi_base"){
             $openid = model('openid')->where('openid',$user['id'])->first();
             if($openid){
@@ -104,7 +106,11 @@ class MainController{
                 }else{
                     $url = $url."?scope=snsapi_userinfo";
                 }
-                \Response::redirect($url);
+                $scope = "snsapi_userinfo";
+                $oauth = $this->app->oauth;
+                $url = url('?impl[api]=wechat@main.auth-callback&client_id='.$this->account->id."&scope=".$scope);
+                $oauth->scopes([$scope]);
+                $oauth->redirect($url)->send();
             }
         }elseif($scope == "snsapi_userinfo"){
             $handler = new WechatMessageHandler($this->account,$this->app);
@@ -204,9 +210,16 @@ class MainController{
     
     
     /**
-     * 公众号二维码登录
+     * 公众号登录
      */
-    public function apiQrcodeLogin(){
+    public function apiLogin(){
+    	
+    	if(strpos($_SERVER['HTTP_USER_AGENT'],"MicroMessenger") !== false){
+    		$data = mr(null,-2,"公众号登录");
+    		$data['redirect'] = url('wechat/auth?client_id='.input('client_id'));
+    		return $data;
+    	}
+    	
     	$key = rand();
     	$result = $this->app->qrcode->temporary("qrcodeLogin:".$key,1800);
         if(!isset($result['ticket'])){
