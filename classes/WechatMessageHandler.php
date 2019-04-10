@@ -127,6 +127,20 @@ class WechatMessageHandler implements EventHandlerInterface
 
 
     public function syncUser($wechatUser){
+
+        if(isset($wechatUser['openId'])){
+            $wechatUser['openid'] = $wechatUser['openId'];
+        }
+        if(isset($wechatUser['nickName'])){
+            $wechatUser['nickname'] = $wechatUser['nickName'];
+        }
+        if(isset($wechatUser['avatarUrl'])){
+            $wechatUser['headimgurl'] = $wechatUser['avatarUrl'];
+        }
+        if(isset($wechatUser['unionId'])){
+            $wechatUser['unionid'] = $wechatUser['unionId'];
+        }
+
         $openid = model('openid')->where('account_id',$this->account->id)->where('openid',$wechatUser["openid"])->first();
         if(!$openid){
             //create openid

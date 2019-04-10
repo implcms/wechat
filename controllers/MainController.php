@@ -165,13 +165,13 @@ class MainController{
         }
         $baseInfo = $this->app->auth->session($code);
         $openid = model('openid')->where('openid',$baseInfo['openid'])->first();
+        $data["session_key"] = $baseInfo['session_key'];
+        $data["session_expire"] = time()+3600;
         if(!$openid){
-            $data["session_key"] = $baseInfo['session_key'];
             return mr($data,-2,"微信用户不存在");
         }
-        //$relationModel = model($modelConfig)->metaData('wechat@user',$user->id)->first();
-        //\Log::info($relationModel);
-        
+        $data["user_id"] = $openid->user_id;
+        return mr($data);
     }
 
     /**
@@ -187,9 +187,8 @@ class MainController{
             return mr(null,-1,$errors[0]);
         }
         $decryptedData = $this->app->encryptor->decryptData($session, $iv, $encryptedData);
-        \Log::info($decryptedData);
-        //$handler = new WechatMessageHandler($this->account,$this->app);
-        //$openid = $handler->syncUser($decryptedData);
+        $handler = new WechatMessageHandler($this->account,$this->app);
+        $openid = $handler->syncUser($decryptedData);
         return mr($decryptedData);
     }
 

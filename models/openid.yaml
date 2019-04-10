@@ -1,9 +1,8 @@
-dropIfExsit: true
 schema:
-    user_id: int
-    account_id: int
+    user_id: integer
+    account_id: integer
     openid: string
-    subscribe: tinyint
+    subscribe: boolean
     _indexs:
-         user_id: user_id
-         account_openid: account_id,openid
+        - user_id
+        - account_id|openid
