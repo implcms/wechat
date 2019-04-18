@@ -140,6 +140,9 @@ class WechatMessageHandler implements EventHandlerInterface
         if(isset($wechatUser['unionId'])){
             $wechatUser['unionid'] = $wechatUser['unionId'];
         }
+        if(isset($wechatUser['gender'])){
+            $wechatUser['sex'] = $wechatUser['gender'];
+        }
 
         $openid = model('openid')->where('account_id',$this->account->id)->where('openid',$wechatUser["openid"])->first();
         if(!$openid){
@@ -147,8 +150,11 @@ class WechatMessageHandler implements EventHandlerInterface
             $openid = [];
             $openid['account_id'] = $this->account->id;
             $openid['openid'] = $wechatUser["openid"];
-            $openid['subscribe'] = 1;
-            model('openid')->create($openid,$openidId);
+            $openid['subscribe'] = isset($wechatUser["subscribe"])?$wechatUser["subscribe"]:0;
+            $err = model('openid')->create($openid,$openidId);
+            if($err){
+                throw new \Exception($err, 1);
+            }
             //if unionid exist
             $user = null;
             if(isset($wechatUser["unionid"])){
@@ -173,6 +179,8 @@ class WechatMessageHandler implements EventHandlerInterface
             if($user_id){
                 model('openid')->where("id",$openidId)->update(["user_id"=>$user_id]);
             }
+            $openid = (object)$openid;
+            $openid->user_id = $user_id;
         }else{
             if(isset($wechatUser["unionid"])){
                 $user = model('user@user')->find($openid->user_id);

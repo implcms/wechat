@@ -16,7 +16,10 @@ class MainController{
         input("client_id",$client_id);
         $account = model('account')->find($client_id);
         if($account === null){
-            throw new \Exception("账号不存在",1);
+            $account = model('account')->where("type",1)->first();
+            if($account === null){
+                throw new \Exception("账号不存在",1);
+            }
         }
         $config = [
             'app_id' => $account->app_id,
@@ -163,10 +166,14 @@ class MainController{
         if(!$code){
             return mr(null,-1,"缺少code参数");
         }
+
         $baseInfo = $this->app->auth->session($code);
+        if(!isset($baseInfo["session_key"])){
+            return mr(null,-2,"code不正确"); 
+        }
         $openid = model('openid')->where('openid',$baseInfo['openid'])->first();
         $data["session_key"] = $baseInfo['session_key'];
-        $data["session_expire"] = time()+3600;
+        $data["session_expire_at"] = time()+3600;
         if(!$openid){
             return mr($data,-2,"微信用户不存在");
         }
@@ -183,13 +190,18 @@ class MainController{
         input('iv',$iv);
         input('encryptedData',$encryptedData);
         $rules = ['session_key'=>null,'iv'=>null,'encryptedData'=>null];
-        if(!vld($errors,$rules)){
+        if(!validator($errors,$rules)){
             return mr(null,-1,$errors[0]);
         }
+
         $decryptedData = $this->app->encryptor->decryptData($session, $iv, $encryptedData);
         $handler = new WechatMessageHandler($this->account,$this->app);
         $openid = $handler->syncUser($decryptedData);
-        return mr($decryptedData);
+
+        if(!$openid){
+            return mr(null,-2,"注册失败");
+        }
+        return mr($openid->user_id);
     }
 
     /**
@@ -215,7 +227,7 @@ class MainController{
     	
     	if(strpos($_SERVER['HTTP_USER_AGENT'],"MicroMessenger") !== false){
     		$data = mr(null,-2,"公众号登录");
-    		$data['redirect'] = url('wechat/auth?client_id='.input('client_id'));
+    		$data['redirect'] = url('wechat/auth?client_id='.$this->account->id);
     		return $data;
     	}
     	
